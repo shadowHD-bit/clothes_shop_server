@@ -94,6 +94,14 @@ export class UsersController {
     return this.usersService.updateDataUser(dto, id);
   }
 
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Изменение роли пользователя' })
+  @ApiResponse({ status: 200, description: 'Роль обновлена!' })
+  @Put('/update/update-role/:id?')
+  updateUserRole(@Param('id') id: number, @Query('role') role:string) {
+    return this.usersService.changeRoleUser(role, id);
+  }
+
   @ApiOperation({ summary: 'Обновление аватара пользователя' })
   @ApiResponse({ status: 200, description: 'Аватар обновлен!' })
   @UseInterceptors(FileInterceptor('avatar'))

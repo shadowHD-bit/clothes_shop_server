@@ -36,7 +36,7 @@ export class UsersService {
     page = page || 1;
     let offset = limit * page - limit;
 
-    const users = await this.UserRepository.findAll(
+    const users = await this.UserRepository.findAndCountAll(
       {
         where: Sequelize.where(Sequelize.fn("CONCAT", Sequelize.col("firstName"), " " ,Sequelize.col("secondName")), {
           [Op.like]: `%${name}%`
@@ -139,6 +139,24 @@ export class UsersService {
       include: { all: true },
     });
     return user;
+  }
+
+  async changeRoleUser(role: string, id: number) {
+    const candidate = await this.UserRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!candidate) {
+      throw new HttpException('Пользователь не найден!', HttpStatus.NOT_FOUND);
+    } else {
+      this.UserRepository.update({
+        role: role
+      },{
+        where: { id: id },
+      });
+
+      return 'Роль обновлена!';
+    }
   }
 
   async updateUserPassword(password: string, id: number) {
