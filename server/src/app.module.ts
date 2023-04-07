@@ -59,6 +59,7 @@ import { ExcelModule } from './core/excel/excel.module';
 import { StatisticsModule } from './core/statistics/statistics.module';
 import { PaymentModule } from './payment/payment.module';
 import { SocialUserDataModel } from './auth/social-auth/vk-auth/vk-auth.model';
+import { BannedUserModel } from './core/users/users-banned.model';
 
 @Module({
   controllers: [],
@@ -120,6 +121,7 @@ import { SocialUserDataModel } from './auth/social-auth/vk-auth/vk-auth.model';
         OrderDetailsUserDatabaseModel,
         SizeDatabaseModel,
         ProductSizeDatabaseModel,
+        BannedUserModel
       ],
       autoLoadModels: true,
     }),

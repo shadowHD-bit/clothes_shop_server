@@ -10,11 +10,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FilesService } from '../../files/files.service';
 import { Op, Sequelize } from 'sequelize';
 import sequelize from 'sequelize';
+import { BannedUserModel } from './users-banned.model';
+import { BannedUserDto } from './dto/banned-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User) private UserRepository: typeof User,
+    @InjectModel(BannedUserModel)
+    private UserBannedRepository: typeof BannedUserModel,
     private jwtService: JwtService,
     @InjectModel(OrderDatabaseModel)
     private orderRepository: typeof OrderDatabaseModel,
@@ -36,15 +40,26 @@ export class UsersService {
     page = page || 1;
     let offset = limit * page - limit;
 
-    const users = await this.UserRepository.findAndCountAll(
-      {
-        where: Sequelize.where(Sequelize.fn("CONCAT", Sequelize.col("firstName"), " " ,Sequelize.col("secondName")), {
-          [Op.like]: `%${name}%`
-        }),
-        limit: limit,
-        offset: offset,
-      },
-    );
+    const users = await this.UserRepository.findAndCountAll({
+      where: Sequelize.where(
+        Sequelize.fn(
+          'CONCAT',
+          Sequelize.col('firstName'),
+          ' ',
+          Sequelize.col('secondName'),
+        ),
+        {
+          [Op.like]: `%${name}%`,
+        },
+      ),
+      include: [
+        {
+          model: BannedUserModel,
+        }
+      ],
+      limit: limit,
+      offset: offset,
+    });
     return users;
   }
 
@@ -141,6 +156,55 @@ export class UsersService {
     return user;
   }
 
+  async isBannedUserByEmail(email: string) {
+    const user = await this.UserBannedRepository.findOne({
+      where: { email: email },
+    });
+    return user;
+  }
+
+  async isBannedUserById(id: number) {
+    const user = await this.UserBannedRepository.findOne({
+      where: { userId: id },
+    });
+    return user;
+  }
+
+  async bannedUser(dto: BannedUserDto, req) {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const user = this.jwtService.verify(token);
+
+      await this.UserBannedRepository.create({
+        ...dto,
+        adminId: user['id']
+      });
+      return "Пользователь забанен!";
+    } catch (e) {
+      throw new HttpException(
+        'Операция не удалась! Повторите позднее...',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async unbannedUser(userId: number, email: string) {
+    try {
+      const userUnbanned = await this.UserBannedRepository.destroy({
+        where: {
+          userId: userId,
+          email: email,
+        },
+      });
+      return "Пользователь разбанен!";
+    } catch (e) {
+      throw new HttpException(
+        'Операция не удалась! Повторите позднее...',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   async changeRoleUser(role: string, id: number) {
     const candidate = await this.UserRepository.findOne({
       where: { id: id },
@@ -149,11 +213,14 @@ export class UsersService {
     if (!candidate) {
       throw new HttpException('Пользователь не найден!', HttpStatus.NOT_FOUND);
     } else {
-      this.UserRepository.update({
-        role: role
-      },{
-        where: { id: id },
-      });
+      this.UserRepository.update(
+        {
+          role: role,
+        },
+        {
+          where: { id: id },
+        },
+      );
 
       return 'Роль обновлена!';
     }

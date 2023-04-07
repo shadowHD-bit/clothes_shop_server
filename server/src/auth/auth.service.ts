@@ -48,6 +48,12 @@ export class AuthService {
   }
 
   private async validateUser(userDto: LoginUserDto) {
+    const isBanned = await this.userService.isBannedUserByEmail(userDto.email);
+    if (isBanned) {
+      throw new UnauthorizedException({
+        message: isBanned.reason,
+      });
+    }
     const user = await this.userService.getUserByEmail(userDto.email);
     const passwordEquals = await bcrypt.compare(
       userDto.password,

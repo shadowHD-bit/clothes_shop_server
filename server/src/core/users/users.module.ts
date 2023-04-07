@@ -12,12 +12,13 @@ import { SocialGoogleUserDataModel } from '../../auth/social-auth/google-auth/go
 import { ResetPasswordDatabaseModel } from '../../auth/reset-psw/reset-psw.model';
 import { AuthModule } from '../../auth/auth.module';
 import { FilesModule } from '../../files/files.module';
+import { BannedUserModel } from './users-banned.model';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    SequelizeModule.forFeature([User, OrderDatabaseModel]),
+    SequelizeModule.forFeature([User, OrderDatabaseModel, BannedUserModel]),
     FilesModule,
     JwtModule.register({
       secret: process.env.PRIVATE_KEY || 'SECRET_KEY',

@@ -2,6 +2,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -18,6 +19,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './users.model';
 import { UsersService } from './users.service';
+import { BannedUserDto } from './dto/banned-user.dto';
 
 @ApiTags('Пользователи')
 @Controller('api/users')
@@ -29,6 +31,20 @@ export class UsersController {
   @Post()
   create(@Body() userDto: CreateUserDto) {
     return this.usersService.createUser(userDto);
+  }
+
+  @ApiOperation({ summary: 'Блокировка пользователя' })
+  @ApiResponse({ status: 200, description: 'Пользователь забанен!' })
+  @Post('/banned')
+  bannedUser(@Body() dto: BannedUserDto, @Request() req: any) {
+    return this.usersService.bannedUser(dto, req);
+  }
+
+  @ApiOperation({ summary: 'Разблокировка пользователя' })
+  @ApiResponse({ status: 200, description: 'Пользователь разбанен!' })
+  @Delete('/unbanned?')
+  unbannedUser(@Query('userId') userId: number, @Query('email') email: string) {
+    return this.usersService.unbannedUser(userId, email);
   }
 
   @ApiOperation({ summary: 'Получить всех пользователей' })
@@ -98,7 +114,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Изменение роли пользователя' })
   @ApiResponse({ status: 200, description: 'Роль обновлена!' })
   @Put('/update/update-role/:id?')
-  updateUserRole(@Param('id') id: number, @Query('role') role:string) {
+  updateUserRole(@Param('id') id: number, @Query('role') role: string) {
     return this.usersService.changeRoleUser(role, id);
   }
 

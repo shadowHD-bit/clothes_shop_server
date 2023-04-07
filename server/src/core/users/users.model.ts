@@ -11,6 +11,7 @@ import { OrderDatabaseModel } from '../orders/model/order.model';
 import { AnswersDatabaseModel } from '../qa/answers/answer.model';
 import { QuestionDatabaseModel } from '../qa/questions/question.model';
 import { ReviewDatabaseModel } from '../reviews/review.model';
+import { BannedUserModel } from './users-banned.model';
 
 interface UserCreationAttributes {
   email: string;
@@ -125,6 +126,9 @@ export class User extends Model<User, UserCreationAttributes> {
 
   @HasMany(() => NotificationDatabaseModel)
   notification: NotificationDatabaseModel
+
+  @HasMany(() => BannedUserModel)
+  bannedUser: BannedUserModel;
 
   @HasMany(() => HistoryViewProductsDataModel)
   history: HistoryViewProductsDataModel
