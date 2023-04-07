@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Request,
   UploadedFile,
   UseInterceptors,
@@ -21,9 +22,7 @@ import { UsersService } from './users.service';
 @ApiTags('Пользователи')
 @Controller('api/users')
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Создание пользователя' })
   @ApiResponse({ status: 200, type: User })
@@ -37,6 +36,19 @@ export class UsersController {
   @Get('/get-all/users')
   getAll() {
     return this.usersService.getAllUsers();
+  }
+
+  @ApiOperation({
+    summary: 'Получить всех пользователей для админки с пагинацией',
+  })
+  @ApiResponse({ status: 200, type: [User] })
+  @Get('/get-all/users-for-admin?')
+  getAllUsersForAdmin(
+    @Query('limit') limit: number,
+    @Query('page') page: number,
+    @Query('name') name: string,
+  ) {
+    return this.usersService.getAllUsersForAdmin(limit, page, name);
   }
 
   @ApiOperation({ summary: 'Получить всех администраторов' })

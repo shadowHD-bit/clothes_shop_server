@@ -8,6 +8,8 @@ import { OrderDatabaseModel } from '../orders/model/order.model';
 import { OrderProductUserDataModel } from '../orders/model/order-product.model';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FilesService } from '../../files/files.service';
+import { Op, Sequelize } from 'sequelize';
+import sequelize from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +28,23 @@ export class UsersService {
 
   async getAllUsers() {
     const users = await this.UserRepository.findAndCountAll();
+    return users;
+  }
+
+  async getAllUsersForAdmin(limit: number, page: number, name: string) {
+    limit = limit || 9;
+    page = page || 1;
+    let offset = limit * page - limit;
+
+    const users = await this.UserRepository.findAll(
+      {
+        where: Sequelize.where(Sequelize.fn("CONCAT", Sequelize.col("firstName"), " " ,Sequelize.col("secondName")), {
+          [Op.like]: `%${name}%`
+        }),
+        limit: limit,
+        offset: offset,
+      },
+    );
     return users;
   }
 
@@ -48,8 +67,10 @@ export class UsersService {
             'countproduct',
             'id',
             [
-              OrderProductUserDataModel.sequelize.literal('price * countproduct'),
-              "totalPrice",
+              OrderProductUserDataModel.sequelize.literal(
+                'price * countproduct',
+              ),
+              'totalPrice',
             ],
           ],
         },
