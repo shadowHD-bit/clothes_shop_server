@@ -114,8 +114,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Изменение роли пользователя' })
   @ApiResponse({ status: 200, description: 'Роль обновлена!' })
   @Put('/update/update-role/:id?')
-  updateUserRole(@Param('id') id: number, @Query('role') role: string) {
-    return this.usersService.changeRoleUser(role, id);
+  updateUserRole(@Param('id') id: number, @Query('role') role: string, @Request() req: any) {
+    return this.usersService.changeRoleUser(role, id, req);
   }
 
   @ApiOperation({ summary: 'Обновление аватара пользователя' })

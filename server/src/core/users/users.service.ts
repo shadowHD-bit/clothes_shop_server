@@ -55,7 +55,7 @@ export class UsersService {
       include: [
         {
           model: BannedUserModel,
-        }
+        },
       ],
       limit: limit,
       offset: offset,
@@ -170,16 +170,22 @@ export class UsersService {
     return user;
   }
 
-  async bannedUser(dto: BannedUserDto, req) {
-    try {
-      const token = req.headers.authorization.split(' ')[1];
-      const user = this.jwtService.verify(token);
+  async bannedUser(dto: BannedUserDto, req: any) {
+    const token = req.headers.authorization.split(' ')[1];
+    const user = this.jwtService.verify(token);
 
+    if (user['id'] == dto.userId) {
+      throw new HttpException(
+        'Операция не удалась! Вы не можете забанить самого себя!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    try {
       await this.UserBannedRepository.create({
         ...dto,
-        adminId: user['id']
+        adminId: user['id'],
       });
-      return "Пользователь забанен!";
+      return 'Пользователь забанен!';
     } catch (e) {
       throw new HttpException(
         'Операция не удалась! Повторите позднее...',
@@ -196,7 +202,7 @@ export class UsersService {
           email: email,
         },
       });
-      return "Пользователь разбанен!";
+      return 'Пользователь разбанен!';
     } catch (e) {
       throw new HttpException(
         'Операция не удалась! Повторите позднее...',
@@ -205,10 +211,20 @@ export class UsersService {
     }
   }
 
-  async changeRoleUser(role: string, id: number) {
+  async changeRoleUser(role: string, id: number, req: any) {
     const candidate = await this.UserRepository.findOne({
       where: { id: id },
     });
+
+    const token = req.headers.authorization.split(' ')[1];
+    const user = this.jwtService.verify(token);
+
+    if (user['id'] == id) {
+      throw new HttpException(
+        'Операция не удалась! Вы не можете изменить роль самому себе!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     if (!candidate) {
       throw new HttpException('Пользователь не найден!', HttpStatus.NOT_FOUND);
