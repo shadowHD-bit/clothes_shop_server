@@ -149,11 +149,19 @@ export class UsersService {
   }
 
   async getUserByEmail(email: string) {
-    const user = await this.UserRepository.findOne({
-      where: { email: email },
-      include: { all: true },
-    });
-    return user;
+    try{
+      const user = await this.UserRepository.findOne({
+        where: { email: email },
+        include: { all: true },
+      });
+      return user;
+    }
+    catch(e){
+      throw new HttpException(
+        'Пользователь с данным адресом электронной почты не найден!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   async isBannedUserByEmail(email: string) {

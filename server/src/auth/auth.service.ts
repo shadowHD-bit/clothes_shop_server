@@ -49,21 +49,27 @@ export class AuthService {
 
   private async validateUser(userDto: LoginUserDto) {
     const isBanned = await this.userService.isBannedUserByEmail(userDto.email);
+    const user = await this.userService.getUserByEmail(userDto.email);
+    if (!user) {
+      throw new UnauthorizedException({
+        message: 'Некорректный адрес электронной почты или пароль!',
+      });
+    }
+    const passwordEquals = await bcrypt.compare(
+      userDto.password,
+      user.password,
+    );
+    if (!passwordEquals) {
+      throw new UnauthorizedException({
+        message: 'Некорректный адрес электронной почты или пароль!',
+      });
+    }
     if (isBanned) {
       throw new UnauthorizedException({
         message: isBanned.reason,
       });
     }
-    const user = await this.userService.getUserByEmail(userDto.email);
-    const passwordEquals = await bcrypt.compare(
-      userDto.password,
-      user.password,
-    );
-    if (user && passwordEquals) {
-      return user;
-    }
-    throw new UnauthorizedException({
-      message: 'Некорректный адрес электронной почты или пароль!',
-    });
+
+    return user;
   }
 }
