@@ -229,7 +229,7 @@ export class ProductsService {
       return product;
     } catch {
       throw new HttpException(
-        'Неудалось удалить товар. Попвторить позднее!',
+        'Неудалось получить товары. Проверьте данные!',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -253,7 +253,12 @@ export class ProductsService {
         { model: ProductBrandDatabaseModel, attributes: ['name'] },
         { model: ProductTypeDatabaseModel, attributes: ['name'] },
         { model: ProductBadgeDatabaseModel, attributes: ['name'] },
-        { model: ReviewDatabaseModel, attributes: [], required: true, duplicating: false},
+        {
+          model: ReviewDatabaseModel,
+          attributes: [],
+          required: true,
+          duplicating: false,
+        },
       ],
       attributes: [
         'id',
@@ -273,14 +278,9 @@ export class ProductsService {
         ],
       ],
       order: [[sequelize.col('all_rate'), 'DESC']],
-      group: [
-        'ProductDatabaseModel.id',
-        'brand.id',
-        'type.id',
-        'badge.id',
-      ],
+      group: ['ProductDatabaseModel.id', 'brand.id', 'type.id', 'badge.id'],
       having: sequelize.literal('count(review.id) <> 0'),
-      limit: 4
+      limit: 4,
     });
     return products;
   }
@@ -302,13 +302,8 @@ export class ProductsService {
         'imgAdditionallyThird',
       ],
       order: [[sequelize.col('ProductDatabaseModel.createdAt'), 'DESC']],
-      group: [
-        'ProductDatabaseModel.id',
-        'brand.id',
-        'type.id',
-        'badge.id',
-      ],
-      limit: 4
+      group: ['ProductDatabaseModel.id', 'brand.id', 'type.id', 'badge.id'],
+      limit: 4,
     });
     return products;
   }

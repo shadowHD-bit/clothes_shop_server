@@ -8,6 +8,8 @@ import { AddProductInLikeDto } from './dto/add-product.dto';
 import { CreateLikeDto } from './dto/create-likes.dto';
 import { LikeProductUserDataModel } from './models/like-products.model';
 import { LikeDatabaseModel } from './models/likes.model';
+import { ProductTypeDatabaseModel } from '../products/product-types/product-type.model';
+import { ProductBrandDatabaseModel } from '../products/product-brands/product-brand.model';
 
 @Injectable()
 export class LikeService {
@@ -87,7 +89,7 @@ export class LikeService {
   }
 
   async addProduct(id: number, req: any) {
-   try {
+    try {
       const token = req.headers.authorization.split(' ')[1];
       const user = this.jwtService.decode(token);
 
@@ -128,21 +130,25 @@ export class LikeService {
           where: {
             id: likeProduct[i].productId,
           },
-          include: {
-            model: ProductParamsDatabaseModel,
-            as: 'params',
-            where: {
-              productId: likeProduct[i].productId,
-              [Op.or]: [
-                {
-                  productId: {
-                    [Op.not]: null,
+          include: [
+            {
+              model: ProductParamsDatabaseModel,
+              as: 'params',
+              where: {
+                productId: likeProduct[i].productId,
+                [Op.or]: [
+                  {
+                    productId: {
+                      [Op.not]: null,
+                    },
                   },
-                },
-              ],
+                ],
+              },
+              required: false,
             },
-            required: false,
-          },
+            { model: ProductBrandDatabaseModel },
+            { model: ProductTypeDatabaseModel },
+          ],
         });
 
         likeArr.push(products.dataValues);
