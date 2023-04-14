@@ -5,8 +5,7 @@ import { CreateProductDto } from './dto/product-create.dto';
 import { ProductDatabaseModel } from './product.model';
 import * as fs from 'fs';
 import { ProductParamsDatabaseModel } from './product-params/product-params.model';
-import { Op } from 'sequelize';
-import { SearchProductDto } from './dto/product-search.dto';
+import { Op, where } from 'sequelize';
 import { ProductSizeDatabaseModel } from '../sizes/models/size-product.model';
 import { UpdateDisplayProductDto } from './dto/update-display.dto';
 import { ProductBrandDatabaseModel } from './product-brands/product-brand.model';
@@ -14,6 +13,7 @@ import { ProductTypeDatabaseModel } from './product-types/product-type.model';
 import { UpdateProductDto } from './dto/product-update.dto';
 import { ProductBadgeDatabaseModel } from './product-badges/product-badge.model';
 import { ReviewDatabaseModel } from '../reviews/review.model';
+import sequelize from 'sequelize';
 
 interface IParamObject {
   title: string;
@@ -154,7 +154,6 @@ export class ProductsService {
           },
           { model: ProductBrandDatabaseModel },
           { model: ProductTypeDatabaseModel },
-          { model: ReviewDatabaseModel },
         ],
       });
 
@@ -167,7 +166,7 @@ export class ProductsService {
       return product;
     } catch {
       throw new HttpException(
-        'Неудалось получить товар. Попвторить позднее!',
+        'Неудалось получить товар. Повторите позднее!',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -248,6 +247,72 @@ export class ProductsService {
     return products;
   }
 
+  async getPopularProduct() {
+    const products = await this.productRepository.findAll({
+      include: [
+        { model: ProductBrandDatabaseModel, attributes: ['name'] },
+        { model: ProductTypeDatabaseModel, attributes: ['name'] },
+        { model: ProductBadgeDatabaseModel, attributes: ['name'] },
+        { model: ReviewDatabaseModel, attributes: [], required: true, duplicating: false},
+      ],
+      attributes: [
+        'id',
+        'name',
+        'price',
+        'imgMain',
+        'imgAdditionallyFirst',
+        'imgAdditionallySecond',
+        'imgAdditionallyThird',
+        [sequelize.fn('SUM', sequelize.col('review.rate')), 'rate_sum'],
+        [sequelize.fn('COUNT', sequelize.col('review.id')), 'rate_count'],
+        [
+          sequelize.literal(
+            'COALESCE(SUM(review.rate), 0) / COALESCE(COUNT(review.id), 0)',
+          ),
+          'all_rate',
+        ],
+      ],
+      order: [[sequelize.col('all_rate'), 'DESC']],
+      group: [
+        'ProductDatabaseModel.id',
+        'brand.id',
+        'type.id',
+        'badge.id',
+      ],
+      having: sequelize.literal('count(review.id) <> 0'),
+      limit: 4
+    });
+    return products;
+  }
+
+  async getLastProduct() {
+    const products = await this.productRepository.findAll({
+      include: [
+        { model: ProductBrandDatabaseModel, attributes: ['name'] },
+        { model: ProductTypeDatabaseModel, attributes: ['name'] },
+        { model: ProductBadgeDatabaseModel, attributes: ['name'] },
+      ],
+      attributes: [
+        'id',
+        'name',
+        'price',
+        'imgMain',
+        'imgAdditionallyFirst',
+        'imgAdditionallySecond',
+        'imgAdditionallyThird',
+      ],
+      order: [[sequelize.col('ProductDatabaseModel.createdAt'), 'DESC']],
+      group: [
+        'ProductDatabaseModel.id',
+        'brand.id',
+        'type.id',
+        'badge.id',
+      ],
+      limit: 4
+    });
+    return products;
+  }
+
   async updateProduct(id: number, dto: UpdateProductDto, files: any) {
     const product = await this.productRepository.findOne({ where: { id } });
     if (product) {
@@ -262,8 +327,6 @@ export class ProductsService {
       dto.productBadgeId
         ? (newVal['productBadgeId'] = dto.productBadgeId)
         : false;
-
-      console.log(newVal);
 
       if (files) {
         if (files.imgMain) {

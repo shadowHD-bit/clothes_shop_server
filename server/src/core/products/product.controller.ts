@@ -114,4 +114,18 @@ export class ProductsController {
   getProductForAdmin() {
     return this.productService.getProductForAdmin();
   }
+
+  @ApiOperation({ summary: 'Получение популярных товаров (4 шт)' })
+  @ApiResponse({ status: 200, type: ProductDatabaseModel })
+  @Get('/get-popular')
+  getPopularProduct() {
+    return this.productService.getPopularProduct();
+  }
+
+  @ApiOperation({ summary: 'Получение последних товаров (4 шт)' })
+  @ApiResponse({ status: 200, type: ProductDatabaseModel })
+  @Get('/get-last')
+  getLastProduct() {
+    return this.productService.getLastProduct();
+  }
 }
