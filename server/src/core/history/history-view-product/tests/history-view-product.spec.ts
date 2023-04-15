@@ -11,6 +11,9 @@ import { HistoryViewProductService } from '../history-view-product.service';
 import { LikeDatabaseModel } from '../../../likes/models/likes.model';
 import { BasketDataModel } from '../../../basket/models/basket.model';
 import { BannedUserModel } from '../../../users/users-banned.model';
+import { ProductBadgeDatabaseModel } from '../../../products/product-badges/product-badge.model';
+import { ProductBrandDatabaseModel } from '../../../products/product-brands/product-brand.model';
+import { ProductTypeDatabaseModel } from '../../../products/product-types/product-type.model';
 
 describe('HistoryProductControllerTests', () => {
   let controller: HistoryViewProductController;
@@ -27,7 +30,12 @@ describe('HistoryProductControllerTests', () => {
           HistoryViewProductsDataModel,
           User,
           ProductDatabaseModel,
-          OrderDatabaseModel, LikeDatabaseModel, BasketDataModel
+          OrderDatabaseModel,
+          LikeDatabaseModel,
+          BasketDataModel,
+          ProductBadgeDatabaseModel,
+          ProductBrandDatabaseModel,
+          ProductTypeDatabaseModel,
         ]),
         forwardRef(() => AuthModule),
       ],
@@ -46,6 +54,12 @@ describe('HistoryProductControllerTests', () => {
       .overrideProvider(getModelToken(BasketDataModel))
       .useValue(mockService)
       .overrideProvider(getModelToken(BannedUserModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(ProductBadgeDatabaseModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(ProductBrandDatabaseModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(ProductTypeDatabaseModel))
       .useValue(mockService)
       .compile();
 
