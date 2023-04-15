@@ -6,6 +6,8 @@ import { ProductBrandDatabaseModel } from '../products/product-brands/product-br
 import { ProductTypeDatabaseModel } from '../products/product-types/product-type.model';
 import { ProductDatabaseModel } from '../products/product.model';
 import { User } from '../users/users.model';
+import { SizeDatabaseModel } from '../sizes/models/size.model';
+import { ProductSizeDatabaseModel } from '../sizes/models/size-product.model';
 
 @Injectable()
 export class ExcelService {
@@ -18,6 +20,10 @@ export class ExcelService {
     private brandRepository: typeof ProductBrandDatabaseModel,
     @InjectModel(ProductDatabaseModel)
     private productRepository: typeof ProductDatabaseModel,
+    @InjectModel(SizeDatabaseModel)
+    private sizeRepository: typeof SizeDatabaseModel,
+    @InjectModel(ProductSizeDatabaseModel)
+    private productSizeRepository: typeof ProductSizeDatabaseModel,
     @InjectModel(OrderDatabaseModel)
     private orderRepository: typeof OrderDatabaseModel,
     @InjectModel(OrderProductUserDataModel)
@@ -39,6 +45,27 @@ export class ExcelService {
       });
 
       return product;
+    } catch {
+      throw new HttpException(
+        'Неудалось выполнить операцию. Повторить позднее!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async getRemnants() {
+    try {
+      const remnants = await this.productSizeRepository.findAndCountAll({
+        attributes: [
+          ['count', 'Количество'],
+        ],
+        include: [
+          { model: ProductDatabaseModel, attributes: [['name', 'НаименованиеТовара'], ['price', 'ЦенаТовара']] },
+          { model: SizeDatabaseModel, attributes: [['size', 'НаименованиеРазмера']] },
+        ],
+      });
+
+      return remnants;
     } catch {
       throw new HttpException(
         'Неудалось выполнить операцию. Повторить позднее!',

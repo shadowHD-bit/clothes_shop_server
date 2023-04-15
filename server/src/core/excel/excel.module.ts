@@ -8,11 +8,13 @@ import { ProductDatabaseModel } from '../products/product.model';
 import { User } from '../users/users.model';
 import { ExcelController } from './excel.controller';
 import { ExcelService } from './excel.service';
+import { ProductSizeDatabaseModel } from '../sizes/models/size-product.model';
+import { SizeDatabaseModel } from '../sizes/models/size.model';
 
 @Module({
   controllers: [ExcelController],
   providers: [ExcelService],
-  imports: [SequelizeModule.forFeature([ProductDatabaseModel, ProductTypeDatabaseModel, ProductBrandDatabaseModel, OrderProductUserDataModel, User, OrderDatabaseModel]),],
+  imports: [SequelizeModule.forFeature([ProductSizeDatabaseModel, SizeDatabaseModel, ProductDatabaseModel, ProductTypeDatabaseModel, ProductBrandDatabaseModel, OrderProductUserDataModel, User, OrderDatabaseModel]),],
   exports: [ExcelService],
 })
 export class ExcelModule {}

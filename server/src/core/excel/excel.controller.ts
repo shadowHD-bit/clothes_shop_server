@@ -18,6 +18,7 @@ import { ProductTypeDatabaseModel } from '../products/product-types/product-type
 import { ProductDatabaseModel } from '../products/product.model';
 import { User } from '../users/users.model';
 import { ExcelService } from './excel.service';
+import { ProductSizeDatabaseModel } from '../sizes/models/size-product.model';
 
 
   @ApiTags('Документы Excel')
@@ -30,6 +31,13 @@ import { ExcelService } from './excel.service';
     @Get('/get-user')
     getProduct() {
       return this.excelService.getUsersToExcel();
+    }
+
+    @ApiOperation({ summary: 'Получение остатка товаров в формате .xlsx' })
+    @ApiResponse({ status: 200, type: ProductSizeDatabaseModel })
+    @Get('/get-remnants')
+    getRemnants() {
+      return this.excelService.getRemnants();
     }
 
     @ApiOperation({ summary: 'Получение типов продукта в формате .xlsx' })
