@@ -16,6 +16,7 @@ import { AuthModule } from '../../auth.module';
 import { UsersModule } from '../../../core/users/users.module';
 import { LikeModule } from '../../../core/likes/likes.module';
 import { LikeDatabaseModel } from '../../../core/likes/models/likes.model';
+import { BannedUserModel } from '../../../core/users/users-banned.model';
 
 describe('AuthGoogleTests', () => {
   let controller: GoogleAuthController;
@@ -62,6 +63,8 @@ describe('AuthGoogleTests', () => {
       .overrideProvider(getModelToken(BasketProductUserDataModel))
       .useValue(mockGoogleAuthService)
       .overrideProvider(getModelToken(ProductDatabaseModel))
+      .useValue(mockGoogleAuthService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockGoogleAuthService)
       .compile();
 

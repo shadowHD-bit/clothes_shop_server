@@ -11,12 +11,18 @@ import { CreateUserDto } from '../core/users/dto/create-user.dto';
 import { LoginUserDto } from '../core/users/dto/login-user.dto';
 import { User } from '../core/users/users.model';
 import { UsersService } from '../core/users/users.service';
+import { BasketDataModel } from '../core/basket/models/basket.model';
+import { LikeDatabaseModel } from '../core/likes/models/likes.model';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    @InjectModel(LikeDatabaseModel)
+    private likeRepository: typeof LikeDatabaseModel,
+    @InjectModel(BasketDataModel)
+    private basketRepository: typeof BasketDataModel,
   ) {}
 
   async login(userDto: LoginUserDto) {
@@ -25,19 +31,30 @@ export class AuthService {
   }
 
   async registration(userDto: CreateUserDto) {
-    const candidate = await this.userService.getUserByEmail(userDto.email);
-    if (candidate) {
+    try {
+      const candidate = await this.userService.getUserByEmail(userDto.email);
+      if (candidate) {
+        throw new HttpException(
+          'Этот адрес электронной почты уже используется!',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const hashPassword = await bcrypt.hash(userDto.password, 5);
+      const user = await this.userService.createUser({
+        ...userDto,
+        password: hashPassword,
+      });
+
+      await this.basketRepository.create({ userId: user.id })
+      await this.likeRepository.create({ userId: user.id })
+
+      return this.generateToken(user);
+    } catch {
       throw new HttpException(
-        'Этот адрес электронной почты уже используется!',
+        'Неудалось выполнить операцию. Повторить позднее!',
         HttpStatus.BAD_REQUEST,
       );
     }
-    const hashPassword = await bcrypt.hash(userDto.password, 5);
-    const user = await this.userService.createUser({
-      ...userDto,
-      password: hashPassword,
-    });
-    return this.generateToken(user);
   }
 
   async generateToken(user: User) {

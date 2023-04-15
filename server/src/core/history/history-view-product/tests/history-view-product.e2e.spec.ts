@@ -8,6 +8,9 @@ import { User } from '../../../users/users.model';
 import { HistoryViewProductsDataModel } from '../history-view-product.model';
 import { HistoryViewProductModule } from '../history-view-product.module';
 import { HistoryViewProductService } from '../history-view-product.service';
+import { BannedUserModel } from '../../../users/users-banned.model';
+import { BasketDataModel } from '../../../basket/models/basket.model';
+import { LikeDatabaseModel } from '../../../likes/models/likes.model';
 
 describe('Integration Tests History View Product Entity (e2e)', () => {
   let app: INestApplication;
@@ -40,6 +43,12 @@ describe('Integration Tests History View Product Entity (e2e)', () => {
       .overrideProvider(getModelToken(ProductDatabaseModel))
       .useValue(mockRepository)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(BannedUserModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(BasketDataModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
       .useValue(mockRepository)
       .compile();
 

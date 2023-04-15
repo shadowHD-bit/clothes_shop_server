@@ -15,6 +15,7 @@ import { AuthModule } from '../../auth.module';
 import { UsersModule } from '../../../core/users/users.module';
 import { LikeModule } from '../../../core/likes/likes.module';
 import { LikeDatabaseModel } from '../../../core/likes/models/likes.model';
+import { BannedUserModel } from '../../../core/users/users-banned.model';
 
 describe('AuthGoogleTests', () => {
   let controller: VkAuthController;
@@ -61,6 +62,8 @@ describe('AuthGoogleTests', () => {
       .overrideProvider(getModelToken(BasketProductUserDataModel))
       .useValue(mockVkAuthService)
       .overrideProvider(getModelToken(ProductDatabaseModel))
+      .useValue(mockVkAuthService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockVkAuthService)
       .compile();
 

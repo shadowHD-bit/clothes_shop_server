@@ -11,6 +11,8 @@ import { BasketModule } from '../basket.module';
 import { BasketService } from '../basket.service';
 import { BasketProductUserDataModel } from '../models/basket-product.model';
 import { BasketDataModel } from '../models/basket.model';
+import { LikeDatabaseModel } from '../../likes/models/likes.model';
+import { BannedUserModel } from '../../users/users-banned.model';
 
 describe('Integration Tests Basket Entity (e2e)', () => {
   let app: INestApplication;
@@ -52,6 +54,10 @@ describe('Integration Tests Basket Entity (e2e)', () => {
       .overrideProvider(getModelToken(OrderDatabaseModel))
       .useValue(mockRepository)
       .overrideProvider(getModelToken(OrderProductUserDataModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockRepository)
       .compile();
 

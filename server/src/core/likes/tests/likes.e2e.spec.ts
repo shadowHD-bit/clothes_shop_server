@@ -10,6 +10,8 @@ import { LikeModule } from '../likes.module';
 import { LikeService } from '../likes.service';
 import { LikeProductUserDataModel } from '../models/like-products.model';
 import { LikeDatabaseModel } from '../models/likes.model';
+import { BannedUserModel } from '../../users/users-banned.model';
+import { BasketDataModel } from '../../basket/models/basket.model';
 
 describe('Integration Tests FAQ Entity (e2e)', () => {
   let app: INestApplication;
@@ -50,6 +52,12 @@ describe('Integration Tests FAQ Entity (e2e)', () => {
       .overrideProvider(getModelToken(OrderDatabaseModel))
       .useValue(mockRepository)
       .overrideProvider(getModelToken(OrderProductUserDataModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(BannedUserModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(BasketDataModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
       .useValue(mockRepository)
       .compile();
 

@@ -8,6 +8,9 @@ import { ProductDatabaseModel } from '../../products/product.model';
 import { User } from '../../users/users.model';
 import { ExcelController } from '../excel.controller';
 import { ExcelService } from '../excel.service';
+import { SizeDatabaseModel } from '../../sizes/models/size.model';
+import { ProductSizeDatabaseModel } from '../../sizes/models/size-product.model';
+import { BannedUserModel } from '../../users/users-banned.model';
 
 describe('ExcelControllerTests', () => {
   let controller: ExcelController;
@@ -27,6 +30,8 @@ describe('ExcelControllerTests', () => {
           OrderProductUserDataModel,
           User,
           OrderDatabaseModel,
+          SizeDatabaseModel,
+          ProductSizeDatabaseModel
         ]),
       ],
       exports: [ExcelService],
@@ -42,6 +47,12 @@ describe('ExcelControllerTests', () => {
       .overrideProvider(getModelToken(User))
       .useValue(mockService)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(SizeDatabaseModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(ProductSizeDatabaseModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockService)
       .compile();
 

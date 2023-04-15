@@ -7,6 +7,7 @@ import { User } from './users.model';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { TestingModule, Test } from '@nestjs/testing';
+import { BannedUserModel } from './users-banned.model';
 
 describe('UserControllerTests', () => {
   let controller: UsersController;
@@ -17,7 +18,7 @@ describe('UserControllerTests', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        SequelizeModule.forFeature([User, OrderDatabaseModel]),
+        SequelizeModule.forFeature([User, OrderDatabaseModel, BannedUserModel]),
         FilesModule,
         JwtModule,
       ],
@@ -27,6 +28,8 @@ describe('UserControllerTests', () => {
       .overrideProvider(getModelToken(User))
       .useValue(mockUserService)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockUserService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockUserService)
       .compile();
 

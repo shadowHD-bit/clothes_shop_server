@@ -8,6 +8,9 @@ import { User } from '../../../users/users.model';
 import { HistoryViewProductController } from '../history-view-product.controller';
 import { HistoryViewProductsDataModel } from '../history-view-product.model';
 import { HistoryViewProductService } from '../history-view-product.service';
+import { LikeDatabaseModel } from '../../../likes/models/likes.model';
+import { BasketDataModel } from '../../../basket/models/basket.model';
+import { BannedUserModel } from '../../../users/users-banned.model';
 
 describe('HistoryProductControllerTests', () => {
   let controller: HistoryViewProductController;
@@ -24,7 +27,7 @@ describe('HistoryProductControllerTests', () => {
           HistoryViewProductsDataModel,
           User,
           ProductDatabaseModel,
-          OrderDatabaseModel,
+          OrderDatabaseModel, LikeDatabaseModel, BasketDataModel
         ]),
         forwardRef(() => AuthModule),
       ],
@@ -37,6 +40,12 @@ describe('HistoryProductControllerTests', () => {
       .overrideProvider(getModelToken(ProductDatabaseModel))
       .useValue(mockService)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(BasketDataModel))
+      .useValue(mockService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockService)
       .compile();
 

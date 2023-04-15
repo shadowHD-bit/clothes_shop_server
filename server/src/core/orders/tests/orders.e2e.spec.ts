@@ -14,6 +14,8 @@ import { OrderProductUserDataModel } from '../model/order-product.model';
 import { OrderDatabaseModel } from '../model/order.model';
 import { OrderModule } from '../order.module';
 import { OrderService } from '../order.service';
+import { LikeDatabaseModel } from '../../likes/models/likes.model';
+import { BannedUserModel } from '../../users/users-banned.model';
 
 describe('Integration Tests Orders Entity (e2e)', () => {
   let app: INestApplication;
@@ -61,6 +63,10 @@ describe('Integration Tests Orders Entity (e2e)', () => {
       .overrideProvider(getModelToken(OrderDetailsUserDatabaseModel))
       .useValue(mockRepository)
       .overrideProvider(getModelToken(NotificationDatabaseModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockRepository)
       .compile();
 

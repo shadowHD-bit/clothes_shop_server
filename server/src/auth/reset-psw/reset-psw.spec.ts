@@ -11,6 +11,7 @@ import { SequelizeModule, getModelToken } from '@nestjs/sequelize';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '../../mail/mail.service';
 import { OrderDatabaseModel } from '../../core/orders/model/order.model';
+import { BannedUserModel } from '../../core/users/users-banned.model';
 
 describe('ResetPasswordTests', () => {
   let controller: ResetPasswordController;
@@ -42,6 +43,8 @@ describe('ResetPasswordTests', () => {
       .overrideProvider(getModelToken(ResetPasswordDatabaseModel))
       .useValue(mockResetPasswordService)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockResetPasswordService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockResetPasswordService)
       .compile();
 

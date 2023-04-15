@@ -10,6 +10,7 @@ import { LikeProductUserDataModel } from './models/like-products.model';
 import { LikeDatabaseModel } from './models/likes.model';
 import { ProductTypeDatabaseModel } from '../products/product-types/product-type.model';
 import { ProductBrandDatabaseModel } from '../products/product-brands/product-brand.model';
+import { log } from 'console';
 
 @Injectable()
 export class LikeService {

@@ -11,6 +11,9 @@ import { QuestionDatabaseModel } from '../../questions/question.model';
 import { AnswerController } from '../answer.controller';
 import { AnswersDatabaseModel } from '../answer.model';
 import { AnswerService } from '../answer.service';
+import { LikeDatabaseModel } from '../../../likes/models/likes.model';
+import { BasketDataModel } from '../../../basket/models/basket.model';
+import { BannedUserModel } from '../../../users/users-banned.model';
 
 describe('AnswersTests', () => {
   let controller: AnswerController;
@@ -44,6 +47,12 @@ describe('AnswersTests', () => {
       .overrideProvider(getModelToken(ProductDatabaseModel))
       .useValue(mockLikesService)
       .overrideProvider(getModelToken(User))
+      .useValue(mockLikesService)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
+      .useValue(mockLikesService)
+      .overrideProvider(getModelToken(BasketDataModel))
+      .useValue(mockLikesService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockLikesService)
       .compile();
 

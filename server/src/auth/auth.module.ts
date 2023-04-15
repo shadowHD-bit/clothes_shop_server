@@ -6,6 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../core/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { BasketDataModel } from '../core/basket/models/basket.model';
+import { LikeDatabaseModel } from '../core/likes/models/likes.model';
 
 @Module({
   controllers: [AuthController],
@@ -13,7 +15,7 @@ import { AuthService } from './auth.service';
   imports: [
     forwardRef(() => UsersModule),
     SequelizeModule.forFeature([
-      User
+      User, BasketDataModel, LikeDatabaseModel
     ]),
     JwtModule.register({
       secret: process.env.PRIVATE_KEY || 'SECRET_KEY',

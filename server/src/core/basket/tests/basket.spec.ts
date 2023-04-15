@@ -9,6 +9,8 @@ import { BasketController } from "../basket.controller";
 import { BasketService } from "../basket.service";
 import { BasketProductUserDataModel } from "../models/basket-product.model";
 import { BasketDataModel } from "../models/basket.model";
+import { BannedUserModel } from "../../users/users-banned.model";
+import { LikeDatabaseModel } from "../../likes/models/likes.model";
 
 describe('BasketControllerTests', () => {
   let controller: BasketController;
@@ -24,7 +26,7 @@ describe('BasketControllerTests', () => {
           SequelizeModule.forFeature([
             BasketProductUserDataModel,
             BasketDataModel,
-            ProductDatabaseModel, User, OrderDatabaseModel
+            ProductDatabaseModel, User, OrderDatabaseModel, LikeDatabaseModel
           ]),
           forwardRef(() => AuthModule),
         ],
@@ -39,6 +41,10 @@ describe('BasketControllerTests', () => {
       .overrideProvider(getModelToken(ProductDatabaseModel))
       .useValue(mockBasketService)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockBasketService)
+      .overrideProvider(getModelToken(BannedUserModel))
+      .useValue(mockBasketService)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
       .useValue(mockBasketService)
       .compile();
 

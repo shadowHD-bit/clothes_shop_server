@@ -9,6 +9,8 @@ import { LikeController } from "../likes.controller";
 import { LikeService } from "../likes.service";
 import { LikeProductUserDataModel } from "../models/like-products.model";
 import { LikeDatabaseModel } from "../models/likes.model";
+import { BasketDataModel } from "../../basket/models/basket.model";
+import { BannedUserModel } from "../../users/users-banned.model";
 
 describe('LikesTests', () => {
   let controller: LikeController;
@@ -39,6 +41,12 @@ describe('LikesTests', () => {
       .overrideProvider(getModelToken(ProductDatabaseModel))
       .useValue(mockLikesService)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockLikesService)
+      .overrideProvider(getModelToken(BasketDataModel))
+      .useValue(mockLikesService)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
+      .useValue(mockLikesService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockLikesService)
       .compile();
 

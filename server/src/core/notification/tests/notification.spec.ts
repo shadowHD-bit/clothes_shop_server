@@ -8,6 +8,9 @@ import { NotificationService } from '../notification.service';
 import { NotificationController } from '../notification.controller';
 import { NotificationDatabaseModel } from '../notification.model';
 import { User } from '../../users/users.model';
+import { BasketDataModel } from '../../basket/models/basket.model';
+import { LikeDatabaseModel } from '../../likes/models/likes.model';
+import { BannedUserModel } from '../../users/users-banned.model';
 
 describe('NotificationTests', () => {
   let controller: NotificationController;
@@ -35,6 +38,12 @@ describe('NotificationTests', () => {
       .overrideProvider(getModelToken(NotificationDatabaseModel))
       .useValue(mockNotificationService)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockNotificationService)
+      .overrideProvider(getModelToken(BasketDataModel))
+      .useValue(mockNotificationService)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
+      .useValue(mockNotificationService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockNotificationService)
       .compile();
 

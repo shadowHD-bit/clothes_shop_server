@@ -8,6 +8,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
+import { BasketDataModel } from '../core/basket/models/basket.model';
+import { LikeDatabaseModel } from '../core/likes/models/likes.model';
+import { BannedUserModel } from '../core/users/users-banned.model';
 
 describe('AuthControllerTests', () => {
   let controller: AuthController;
@@ -23,7 +26,7 @@ describe('AuthControllerTests', () => {
       imports: [
         forwardRef(() => UsersModule),
         SequelizeModule.forFeature([
-          User
+          User, BasketDataModel, LikeDatabaseModel
         ]),
         JwtModule.register({
           secret: process.env.PRIVATE_KEY || 'SECRET_KEY',
@@ -40,6 +43,12 @@ describe('AuthControllerTests', () => {
       .overrideProvider(getModelToken(User))
       .useValue(mockAuthService)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockAuthService)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
+      .useValue(mockAuthService)
+      .overrideProvider(getModelToken(BasketDataModel))
+      .useValue(mockAuthService)
+      .overrideProvider(getModelToken(BannedUserModel))
       .useValue(mockAuthService)
       .overrideProvider(JwtService)
       .useValue(mockJwtService)

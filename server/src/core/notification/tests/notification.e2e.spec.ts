@@ -7,6 +7,9 @@ import { User } from '../../users/users.model';
 import { NotificationDatabaseModel } from '../notification.model';
 import { NotificationModule } from '../notification.module';
 import { NotificationService } from '../notification.service';
+import { BannedUserModel } from '../../users/users-banned.model';
+import { LikeDatabaseModel } from '../../likes/models/likes.model';
+import { BasketDataModel } from '../../basket/models/basket.model';
 
 describe('Integration Tests Notification Entity (e2e)', () => {
   let app: INestApplication;
@@ -38,6 +41,12 @@ describe('Integration Tests Notification Entity (e2e)', () => {
       .overrideProvider(getModelToken(User))
       .useValue(mockRepository)
       .overrideProvider(getModelToken(OrderDatabaseModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(BannedUserModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(BasketDataModel))
       .useValue(mockRepository)
       .compile();
 

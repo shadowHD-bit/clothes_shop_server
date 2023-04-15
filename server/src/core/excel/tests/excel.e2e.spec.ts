@@ -10,6 +10,8 @@ import { ProductDatabaseModel } from '../../products/product.model';
 import { User } from '../../users/users.model';
 import { ExcelModule } from '../excel.module';
 import { ExcelService } from '../excel.service';
+import { ProductSizeDatabaseModel } from '../../sizes/models/size-product.model';
+import { SizeDatabaseModel } from '../../sizes/models/size.model';
 
 describe('Integration Tests Excel Entity (e2e)', () => {
   let app: INestApplication;
@@ -48,6 +50,10 @@ describe('Integration Tests Excel Entity (e2e)', () => {
       .overrideProvider(getModelToken(OrderProductUserDataModel))
       .useValue(mockRepository)
       .overrideProvider(getModelToken(ProductBrandDatabaseModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(ProductSizeDatabaseModel))
+      .useValue(mockRepository)
+      .overrideProvider(getModelToken(SizeDatabaseModel))
       .useValue(mockRepository)
       .compile();
 

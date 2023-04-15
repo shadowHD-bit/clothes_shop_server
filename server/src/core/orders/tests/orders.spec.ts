@@ -15,6 +15,8 @@ import { OrderDetailsUserDatabaseModel } from "../model/order-details.model";
 import { OrderProductUserDataModel } from "../model/order-product.model";
 import { OrderController } from "../order.controller";
 import { OrderService } from "../order.service";
+import { BannedUserModel } from "../../users/users-banned.model";
+import { LikeDatabaseModel } from "../../likes/models/likes.model";
 
 describe('OrdersTest', () => {
   let controller: OrderController;
@@ -55,6 +57,10 @@ describe('OrdersTest', () => {
       .overrideProvider(getModelToken(OrderDetailsUserDatabaseModel))
       .useValue(mockOrdersService)
       .overrideProvider(getModelToken(NotificationDatabaseModel))
+      .useValue(mockOrdersService)
+      .overrideProvider(getModelToken(BannedUserModel))
+      .useValue(mockOrdersService)
+      .overrideProvider(getModelToken(LikeDatabaseModel))
       .useValue(mockOrdersService)
       .compile();
 
