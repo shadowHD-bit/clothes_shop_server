@@ -7,6 +7,7 @@ import { SizeDatabaseModel } from './models/size.model';
 import { ProductSizeDatabaseModel } from './models/size-product.model';
 import { CreateSizeDto } from './dto/size.dto';
 import { CreateSizeProductDto } from './dto/size-product.dto';
+import { ProductDatabaseModel } from '../products/product.model';
 
 @Injectable()
 export class SizeService {
@@ -15,6 +16,8 @@ export class SizeService {
     private sizeRepository: typeof SizeDatabaseModel,
     @InjectModel(ProductSizeDatabaseModel)
     private productSizeRepository: typeof ProductSizeDatabaseModel,
+    @InjectModel(ProductDatabaseModel)
+    private productRepository: typeof ProductDatabaseModel,
   ) {}
 
   async createSize(dto: CreateSizeDto) {
@@ -135,6 +138,22 @@ export class SizeService {
         await this.productSizeRepository.destroy({
           where: { productId: dto.productId, sizeId: dto.sizeId },
         });
+
+        const productSizeCheck = await this.productSizeRepository.findOne({
+          where: { productId: dto.productId },
+        });
+
+        if (!productSizeCheck) {
+          this.productRepository.update(
+            { isDisplay: false },
+            {
+              where: {
+                id: dto.productId
+              },
+            },
+          );
+        }
+
         return 'Размер удален';
       } else {
         throw new HttpException(
