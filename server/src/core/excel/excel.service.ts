@@ -117,7 +117,7 @@ export class ExcelService {
             ],
           },
         ],
-        group: ['OrderDatabaseModel.id', 'order_product.id', 'order_product->product.id', 'order_product->product->brand.id', 'order_product->product->type.id', 'user.id']
+        group: ['OrderDatabaseModel.id', 'order_products.id', 'order_products->product.id', 'order_products->product->brand.id', 'order_products->product->type.id', 'user.id']
       });
     } else if (complete === "completed") {
       products = await this.orderRepository.findAndCountAll({
@@ -159,7 +159,7 @@ export class ExcelService {
             ],
           },
         ],
-        group: ['OrderDatabaseModel.id', 'order_product.id', 'order_product->product.id', 'order_product->product->brand.id', 'order_product->product->type.id', 'user.id']
+        group: ['OrderDatabaseModel.id', 'order_products.id', 'order_products->product.id', 'order_products->product->brand.id', 'order_products->product->type.id', 'user.id']
       });
     } else {
       products = await this.orderRepository.findAndCountAll({
@@ -200,7 +200,7 @@ export class ExcelService {
             ],
           },
         ],
-        group: ['OrderDatabaseModel.id', 'order_product.id', 'order_product->product.id', 'order_product->product->brand.id', 'order_product->product->type.id', 'user.id']
+        group: ['OrderDatabaseModel.id', 'order_products.id', 'order_products->product.id', 'order_products->product->brand.id', 'order_products->product->type.id', 'user.id']
       });
     }
 
